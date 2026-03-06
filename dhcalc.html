@@ -1,0 +1,173 @@
+<link href="files/theme/DH-talent-calc-styl.css" rel="stylesheet" />
+<script src="files/theme/DH-talent-calc-conf.js"></script>
+<script src="files/theme/DH-talent-calc-func.js"></script>
+
+<h1>Talenty pro Dračí Hlídku <button class="control" onclick="myImport()">Načti</button> <button class="control" onclick="myExport()">Ulož</button><button class="control" onclick="reset()">Reset</button></h1>
+<div id="setting">
+    <div class="left">
+    <input id="INPclass" style="display: none;" value="Válečník" disabled/>
+    <div class="p">
+        <spam id="classSel"></spam>
+    </div>
+    <div class="p"> Aktuální lvl: <input class="value" id="INPlevel" disabled value="1"></div>
+    <div class="p"> Počet dovednostních bodů na lvl:
+        <input class="value" id="INPskillModif" disabled value="3"></div>
+    <div class="p"> Volné dovednostní body: <input class="value" id="INPskillPoint" disabled value="3"></div>
+    </div>
+    <div class="left">
+        <label>Rasa:</label><select id="raceSelect" onchange="raceChangeEvent(this)"><option value="7,7,7,7,7|''">---</option></select>
+        <label>Součet na kostce:</label><input id="attrCount" value="0" disabled/><br>
+        <table id="attrTable">
+            <tr><th>Atributy</th><th>Povolani</th><th>Rasa</th><th>"Kostka"</th><th>Bonus</th><th>Výsledek</th><th>Posílení</th><th>Oprava</th></tr>
+            <tr>
+                <th>Síla</th>
+            </tr>
+            <tr>
+                <th>Obratnost</th>
+            </tr>
+            <tr>
+                <th>Odolnost</th>
+            </tr>
+            <tr>
+                <th>Inteligence</th>
+            </tr>
+            <tr>
+                <th>Charisma</th>
+            </tr>
+        </table>
+    </div>
+    <div class="clear"></div>
+</div>
+<div class="left">
+    <table class="tiles" id="specialTable">
+        <tbody>
+            <tr>
+                <th colspan=4 class="hiddenTitle">
+                    <div>Kliknutím na ikonu postava postoupí o 1 lvl<br>
+                        Plná čára jsou už zvolené schopnosti<br>
+                        Barvy přísluší specializacím
+                    </div>
+                    Zvláštní schopnosti povolání
+                </th>
+            </tr>
+        </tbody>
+    </table>
+    <table class="tiles" id="expertTable">
+        <tbody>
+            <tr>
+                <th colspan=3 class="hiddenTitle">
+                    <div>Specialice jsou zamčené,<br>
+                        dokud nejsou splnené požadavky.
+                    </div>
+                    Možnosti specializací
+                </th>
+            </tr>
+        </tbody>
+    </table>
+</div>
+<div class="left">
+    <table class="tiles" id="skillTable">
+        <tbody>
+            <tr>
+                <th colspan=4 class="hiddenTitle">
+                    <div>Kliknutím na ikonu se dovednost zlepší o 1 st<br>
+                        Barvy korespondují s atributem<br>
+                        Plná čára<br> dovednost byla tento lvl již vylepšena<br>
+                        Čárkovaná<br> není dost volných DB, nebo chybí schopnosti<br>
+                        Tečkovaná<br> dovednost je možné vylepšit
+                    </div>
+                    Dovednosti
+                </th>
+            </tr>
+        </tbody>
+    </table>
+</div>
+<div class="left">
+    <table class="tiles" id="historyTable">
+        <tbody>
+            <tr>
+                <th colspan=4 class="hiddenTitle">
+                    <div>Seznam vybraných schopností<br>
+                        a dovedností naučených na daném lvlu<br>
+                        Kliknutím na dovednost se z daného lvlu odstrání<br>
+                        a spolu s ní i ty naučenené na vyšších lvlech<br>
+                        Kliknutím na tlačítko X se odstrání celý lvl a další po něm
+                    </div>
+                    Historie dovedností
+                </th>
+            </tr>
+        </tbody>
+    </table>
+</div>
+<div class="left">
+    <table class="tiles" id="otherSkillsTable">
+        <tbody>
+            <tr>
+                <th colspan=4 class="hiddenTitle">
+                    <div>Dovednosti, které postava nemá,<br>
+                        ale může na ně házet.
+                    </div>
+                    Ostatní použitelné dovednosti
+                </th>
+            </tr>
+        </tbody>
+    </table>
+</div>
+<div class="left">
+    <table class="tiles" id="ownSkillsTable">
+        <tbody>
+            <tr>
+                <th colspan=4 class="hiddenTitle">
+                    <div>Seznam dovedností na st. alespoň 1<br>
+                        Vhodné k přepsání do denníku
+                    </div>
+                    Vlastní dovednosti
+                </th>
+            </tr>
+        </tbody>
+    </table>
+</div>
+<div class="left">
+    <table class="tiles" id="availableActionsTable">
+        <tbody>
+            <tr>
+                <th colspan=4 class="hiddenTitle">
+                    <div>Seznam možných akcí dle povolání, úrovně a schopností</div>
+                    Dostupné akce
+                </th>
+            </tr>
+        </tbody>
+    </table>
+    <div class="hiddenHint" id="actionHint"></div>
+</div>
+<input type="text" value="" id="INPcpyClip" />
+<script>
+    setWeebly();
+    setClasses();
+    var loc = location.href.split("?");
+    if (loc.length == 1) {
+        reset("Válečník");
+    } else {
+        loadChar(loc[1]);
+    }
+</script>
+<div id="helper"></div>
+<div id="footer"></div>
+<footer>
+    <div id="thanks">
+        <h2>S poděkováním <a href="dracihlidka.cz">Dračí Hlídka</a></h2>
+        <dl>
+            <dt>Marcel "Fyrgon" Marciš</dt>
+            <dd>Programování a prvotní dizajn</dd>
+            <dt>Pavel "Sir Tirus" Ondrusz</dt>
+            <dd>Grafika, autor DH</dd>
+            <dt>Morione</dt>
+            <dd>Grafika běžných doveností</dd>
+            <dt>Grafika schopností a jiných dovedností</dt>
+            <dd>Ukradeno z internetu s drobným předěláním -> !NEKOPÍROVAT!</dd>
+            <dt>DorianPavus a MartinMachco</dt>
+            <dd>Parafráze databáze</dd>
+            <dt><a href="https://discord.gg/KTmXRvM">Komunita Discord DH</a></dt>
+            <dd>Debugování a nápady</dd>
+        </dl>
+</footer>
