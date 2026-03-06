@@ -44,12 +44,12 @@ const skills = {
     //dovednosti: ID, nazev, hl.atribut, obrazek, IDpozadovane schopnosti (-1 = od lvl 1)
     "Válečník": [],
     "Hraničář": [
-        { "id": 200, "name": "Pouto s přírodou", "img": "skill/Pouto_s_prirodou.png", "req": -1, "znalostni": true, "atr": ["INT"], "startLvl": 3 },
-        { "id": 201, "name": "Lov", "img": "skill/Lov.png", "req": -1, "znalostni": false, "atr": ["OBR"], "startLvl": 3 },
-        { "id": 202, "name": "Orientace", "img": "skill/Orientace.png", "req": -1, "znalostni": false, "atr": ["INT"], "startLvl": 3 },
-        { "id": 203, "name": "Předpovídání počasí", "img": "skill/Predpovidani_pocasi.png", "req": -1, "znalostni": false, "atr": ["INT"], "startLvl": 3 },
-        { "id": 204, "name": "Stopování", "img": "skill/Stopovani.png", "req": -1, "znalostni": false, "atr": ["INT"], "startLvl": 3 },
-        { "id": 205, "name": "Léčitelství", "img": "skill/special/hra/Lecitelstvi.png", "req": 2, "znalostni": false, "atr": ["OBR"], "startLvl": 3 },
+        { "id": 200, "name": "Pouto s přírodou", "img": "skill/pouto_s_prirodou.png", "req": -1, "znalostni": true, "atr": ["INT"], "startLvl": 3 },
+        { "id": 201, "name": "Lov", "img": "skill/lov.png", "req": -1, "znalostni": false, "atr": ["OBR"], "startLvl": 3 },
+        { "id": 202, "name": "Orientace", "img": "skill/orientace.png", "req": -1, "znalostni": false, "atr": ["INT"], "startLvl": 3 },
+        { "id": 203, "name": "Předpovídání počasí", "img": "skill/predpovidani_pocasi.png", "req": -1, "znalostni": false, "atr": ["INT"], "startLvl": 3 },
+        { "id": 204, "name": "Stopování", "img": "skill/stopovani.png", "req": -1, "znalostni": false, "atr": ["INT"], "startLvl": 3 },
+        { "id": 205, "name": "Léčitelství", "img": "skill/special/hra/lecitelstvi.png", "req": 2, "znalostni": false, "atr": ["OBR"], "startLvl": 3 },
         { "id": 206, "name": "Kamufláž", "img": "skill/special/hra/kamuflaz.png", "req": 6, "znalostni": false, "atr": ["OBR"], "startLvl": 3 },
         { "id": 207, "name": "Líčení pastí", "img": "skill/special/hra/liceni_pasti.png", "req": 6, "znalostni": false, "atr": ["OBR"], "startLvl": 3 },
         { "id": 208, "name": "Zahlazování stop", "img": "skill/special/hra/zahlazovani_stop.png", "req": 6, "znalostni": false, "atr": ["OBR"], "startLvl": 3 },
@@ -60,9 +60,9 @@ const skills = {
         { "id": 213, "name": "Znalost místních poměrů", "img": "skill/special/hra/znalost_mistnich_pomeru.png", "req": "Chodec", "znalostni": false, "atr": ["OBR"], "startLvl": 5 },
     ],
     "Alchymista": [
-        { "id": 300, "name": "Vidění many", "img": "skill/Videni_many.png", "req": -1, "znalostni": true, "atr": ["INT"], "startLvl": 3 },
-        { "id": 301, "name": "Destilace", "img": "skill/Destilace.png", "req": -1, "znalostni": true, "atr": ["OBR"], "startLvl": 3 },
-        { "id": 302, "name": "Lučba", "img": "skill/Lucba.png", "req": -1, "znalostni": true, "atr": ["OBR"], "startLvl": 3 },
+        { "id": 300, "name": "Vidění many", "img": "skill/videni_many.png", "req": -1, "znalostni": true, "atr": ["INT"], "startLvl": 3 },
+        { "id": 301, "name": "Destilace", "img": "skill/destilace.png", "req": -1, "znalostni": true, "atr": ["OBR"], "startLvl": 3 },
+        { "id": 302, "name": "Lučba", "img": "skill/lucba.png", "req": -1, "znalostni": true, "atr": ["OBR"], "startLvl": 3 },
         { "id": 303, "name": "Pokročilá identifikace", "img": "skill/special/alc/pokrocila_identifikace.png", "req": 2, "znalostni": true, "atr": ["INT"], "startLvl": 3 },
         { "id": 304, "name": "Výroba svitků", "img": "skill/special/alc/vyroba_svitku.png", "req": 5, "znalostni": true, "atr": ["OBR"], "startLvl": 3 },
         { "id": 305, "name": "Chirurgie", "img": "skill/special/alc/chirurgie.png", "req": "Medicus", "znalostni": true, "atr": ["OBR"], "startLvl": 5 },
@@ -70,13 +70,13 @@ const skills = {
         { "id": 307, "name": "Theurgie", "img": "skill/special/alc/theurgie.png", "req": "Theurg", "znalostni": true, "atr": ["INT"], "startLvl": 5 },
     ],
     "Kouzelník": [
-        { "id": 400, "name": "Sesílání kouzel", "img": "skill/Sesilani_kouzel.png", "req": -1, "znalostni": true, "atr": ["INT"], "startLvl": 3 }
+        { "id": 400, "name": "Sesílání kouzel", "img": "skill/sesilani_kouzel.png", "req": -1, "znalostni": true, "atr": ["INT"], "startLvl": 3 }
     ],
     "Zloděj": [
-        { "id": 500, "name": "Hazardní hry", "img": "skill/Hazardni_hry.png", "req": -1, "znalostni": false, "atr": ["OBR"], "startLvl": 3 },
-        { "id": 501, "name": "Odhad ceny", "img": "skill/Odhad_ceny.png", "req": -1, "znalostni": false, "atr": ["INT"], "startLvl": 3 },
-        { "id": 502, "name": "Přesvědčování", "img": "skill/Presvedcovani.png", "req": -1, "znalostni": false, "atr": ["CHA"], "startLvl": 3 },
-        { "id": 503, "name": "Vybírání kapes", "img": "skill/Vybirani_kapes.png", "req": -1, "znalostni": false, "atr": ["OBR"], "startLvl": 3 },
+        { "id": 500, "name": "Hazardní hry", "img": "skill/hazardni_hry.png", "req": -1, "znalostni": false, "atr": ["OBR"], "startLvl": 3 },
+        { "id": 501, "name": "Odhad ceny", "img": "skill/odhad_ceny.png", "req": -1, "znalostni": false, "atr": ["INT"], "startLvl": 3 },
+        { "id": 502, "name": "Přesvědčování", "img": "skill/presvedcovani.png", "req": -1, "znalostni": false, "atr": ["CHA"], "startLvl": 3 },
+        { "id": 503, "name": "Vybírání kapes", "img": "skill/vybirani_kapes.png", "req": -1, "znalostni": false, "atr": ["OBR"], "startLvl": 3 },
         { "id": 504, "name": "Umění kočičího pohyb", "img": "skill/special/zlo/kocici_pohyb.png", "req": 6, "znalostni": true, "atr": ["OBR"], "startLvl": 3 },
         { "id": 505, "name": "Umění proměn", "img": "skill/special/zlo/promeny.png", "req": 7, "znalostni": true, "atr": ["CHA"], "startLvl": 3 },
         { "id": 506, "name": "Umění skrývání", "img": "skill/special/zlo/skryvani.png", "req": 8, "znalostni": true, "atr": ["OBR"], "startLvl": 3 },
@@ -88,7 +88,7 @@ const skills = {
         { "id": 512, "name": "Umění boje s pláštěm", "img": "skill/special/zlo/boj_s_plastem.png", "req": 46, "znalostni": true, "atr": ["OBR"], "startLvl": 5 },
     ],
     "Klerik": [
-        { "id": 600, "name": "Prosby", "img": "skill/Prosby.png", "req": -1, "znalostni": true, "atr": ["CHA"], "startLvl": 3 }
+        { "id": 600, "name": "Prosby", "img": "skill/prosby.png", "req": -1, "znalostni": true, "atr": ["CHA"], "startLvl": 3 }
     ]
 };
 
