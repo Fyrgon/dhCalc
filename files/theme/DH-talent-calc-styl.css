@@ -1,0 +1,437 @@
+.container {
+    position: initial;
+}
+
+body {
+    padding: 2em;
+}
+
+div {
+    margin: 5px;
+}
+
+footer {
+    clear: both;
+    position: fixed;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    height: 140px;
+    background-color: rgba(100, 100, 100, 0.5);
+    color: #300;
+    text-align: center;
+    z-index: 10;
+}
+div#footer {
+    height: 100px;
+    clear: both;
+    opacity: 0;
+}
+
+dl {
+    display: flex;
+    flex-flow: column wrap;
+    max-height: 6em;
+}
+
+dt {
+    padding: 2px 4px;
+    background: #333;
+    color: #fff;
+}
+
+dd {
+    margin: 0;
+    padding: 4px;
+    min-height: 3em;
+}
+
+hr {
+    border: none;
+}
+
+#setting spam {
+    margin-right: 1em;
+}
+
+#historyTable {
+    margin-left: 1em;
+    max-width: 30vw;
+    min-width: 20vw;
+}
+
+#specialTable,
+#expertTable,
+#skillTable,
+#otherSkillsTable,
+#ownSkillsTable {
+    width: 14vw;
+}
+
+#skillTable button {
+    color: red;
+    font-weight: bold;
+    display: inline-block;
+    position: relative;
+    transition: 0.5s;
+}
+
+#ownSkillsTable button {
+    color: red;
+    font-weight: bold;
+    display: inline-block;
+}
+
+
+#INPcpyClip {
+    position: absolute;
+    top: -100em;
+    opacity: 0;
+}
+
+.hiddenTitle {
+    position:relative;
+    z-index: 0;
+}
+
+th.hiddenTitle {
+    width: 14vw;
+}
+
+button.hiddenTitle.selected {
+    border-color: red;
+}
+
+.hiddenTitle div {
+    visibility: hidden;
+    opacity: 0;
+    transition: opacity .5s;
+
+    position: absolute;
+    left: -25%;
+    right: -25%;
+    bottom: 1em;
+    border: 1px solid gray;
+    background: rgba(245,245,220,1);
+    padding: 0.5em 2em;
+    z-index: 50;
+    /*width: max-content;*/
+    border-radius: 6px;
+    /* TODO: doesn't work with display:none, without display:none it gets into cursor when pointing on other elements
+    transform-origin: center;
+    transition: all 5.4s ease-in;
+    */
+}
+
+.hiddenTitle:hover div {
+    visibility: visible;
+    opacity: 1;
+    /*opacity: 1;*/
+    display: block;
+    float:left;
+}
+
+button.hiddenTitle div {
+    width: 20em;
+    padding: 4px;
+    left:auto; bottom: auto;
+    right: 3em;
+    top: -1em;
+}
+
+table.skillHint {
+    text-align: center;
+    width: 100%;
+    border-collapse: collapse;
+}
+
+table.skillHint tr {
+    display: table-row;
+}
+
+.skillHint th,
+.skillHint td {
+    border: 2px ridge darkred;
+    padding: 0 10px;
+}
+.skillHint td {
+    width: inherit;
+}
+
+.hiddenHint {
+    display: none;
+    position: absolute;
+    right: 0;
+    top: 0;
+    max-width: 15vw;
+    width: fit-content;
+    height: fit-content;
+    border: 2px black solid;
+    border-radius: 10px;
+    background: beige;
+    z-index: 10;
+}
+
+#skillTable button:not(.restricted) span:after {
+    content: "+1";
+    font-weight: bolder;
+    opacity: 0;
+    transition: 0.8s;
+    position: absolute;
+    right: -1.5em;
+    color: black;
+    text-shadow: 0 1px 0 black;
+}
+
+#skillTable button:not(.restricted):hover span:after {
+    opacity: 1;
+    right: -1.2em;
+}
+
+#skillTable button.znalsotni:before {
+    content: "X";
+    position: absolute;
+    right: -0.1em;
+    top: 0;
+    border: 1px solid black;
+    border-radius: 50%;
+    width: 1.1em;
+    height: 1.1em;
+    color: black;
+}
+#attrTable input {
+    width: 3em;
+    text-align: center;
+}
+
+.left {
+    float: left;
+    margin-top: 1em;
+    margin-bottom: 1em;
+}
+
+.clear {
+    clear: both;
+    margin-right: 1em;
+    margin-top: 1em;
+    margin-bottom: 1em;
+}
+
+.value {
+    width: 2em;
+}
+
+.restricted {
+    border-style: dashed;
+}
+
+.taken, .partial {
+    color: black;
+    font-weight: bold;
+    border-radius: 0.5em;
+    border-width: 2px;
+    border-style: solid;
+}
+.partial {
+    border-style: dashed;
+}
+
+.forsaken {
+    filter: grayscale(0.5);
+}
+.btn.forsaken::before,
+.btn.forsaken::after {
+  content: "X";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 70%;       /* covers ~70% of the button */
+  height: 4px;      /* thickness of the cross lines */
+  background: red;
+  transform-origin: center;
+}
+
+.btn.forsaken::before {
+  transform: translate(-50%, -50%) rotate(45deg);
+}
+
+.btn.forsaken::after {
+  transform: translate(-50%, -50%) rotate(-45deg);
+}
+
+.removable {
+    cursor: zoom-out;
+}
+
+.hiddenSpecialOption {
+    display: none;
+}
+
+#specialTable button:hover .hiddenSpecialOption {
+    display: inline-block;
+}
+
+button {
+    border-radius: 0.5em;
+    width: 4em;
+    height: 4em;
+    margin: 0.2em;
+    border: 2px dotted;
+    background-position: center;
+    background-size: 110%;
+}
+
+button span {
+    display: block;
+    width: 1.5em;
+    height: 1.5em;
+    position: relative;
+    right: -2.8em;
+    bottom: -2.2em;
+    border: 1px solid gold;
+    border-radius: 0.4em;
+    background: #022;
+    text-align: center;
+    font-size: 0.8em;
+    line-height: 1.6em;
+}
+
+button:focus {
+    outline: 0;
+}
+
+button:not(.restricted) {
+    cursor: pointer;
+}
+
+button.control {
+    background-image: linear-gradient(to bottom, #e4e4e4, #f7f7f7);
+    border: 1px solid #afafaf;
+    width: auto;
+	height: 2em;
+}
+
+.none {
+    border-color: gray;
+}
+
+.skillSIL {
+    border-color: red;
+}
+
+.skillOBR {
+    border-color: green;
+}
+
+.skillODO {
+    border-color: darkgoldenrod;
+}
+
+.skillINT {
+    border-color: blue;
+}
+
+.skillCHA {
+    border-color: purple;
+}
+
+.expertRed {
+    border-color: red;
+}
+
+.expertGre {
+    border-color: green;
+}
+
+.expertBlu {
+    border-color: blue;
+}
+
+.classOK {
+    animation: pulseGre 1s infinite;
+}
+
+.classRestrict {
+    animation: pulseRed 1s infinite;
+}
+
+.histHead {
+    font-weight: bold;
+}
+
+.pulsate {
+    box-shadow: 0 0 0 rgba(204, 169, 44, 0.4);
+    animation: pulsate 1s infinite;
+}
+
+@keyframes pulsate {
+    0% {
+        -webkit-box-shadow: 0 0 0 0 rgba(204, 169, 44, 0.7);
+    }
+    70% {
+        -webkit-box-shadow: 0 0 0 10px rgba(204, 169, 44, 0);
+    }
+    100% {
+        -webkit-box-shadow: 0 0 0 0 rgba(204, 169, 44, 0);
+    }
+}
+
+@keyframes pulse {
+    0% {
+        background-color: #FFF;
+    }
+    50% {
+        background-color: #DDD;
+    }
+    100% {
+        background-color: #FFF;
+    }
+}
+
+@keyframes pulseRed {
+    0% {
+        background-color: #FFF;
+    }
+    50% {
+        background-color: #FDD;
+    }
+    100% {
+        background-color: #FFF;
+    }
+}
+
+@keyframes pulseGre {
+    0% {
+        background-color: #FFF;
+    }
+    50% {
+        background-color: #DFD;
+    }
+    100% {
+        background-color: #FFF;
+    }
+}
+
+@keyframes pulseBlu {
+    0% {
+        background-color: #FFF;
+    }
+    50% {
+        background-color: #DDF;
+    }
+    100% {
+        background-color: #FFF;
+    }
+}
+
+@keyframes pulse {
+    0% {
+        background-color: #FFF;
+    }
+    50% {
+        background-color: #DDD;
+    }
+    100% {
+        background-color: #FFF;
+    }
+}
