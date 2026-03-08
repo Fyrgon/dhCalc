@@ -836,19 +836,19 @@ function showHint() {
 
     function t(val) { if (Number.isNaN(val) || isString(val)) { return val; } else if (val == 0) { return "ihned"; } else { return timeIt(val); } }
 
-    if (data.type == "trick") {
-        hint.innerHTML = `<table class="skillHint"><tr><th title="Jméno">${n(data.name)}</th></tr><tr><td title="Podmínka užití">${n(data.cost)}</td></tr><tr><td title="Ověření">${n(data.check)}</td></tr><tr><td title="Popis">${n(data.text)}</td></tr><tr><td title="Efekt na životy">${n(data.dmg)}</td></tr></table>`;
+    if (data.actionType == "trick") {
+        hint.innerHTML = `<table class="skillHint"><tr><th title="Jméno">${n(data.actionName)}</th></tr><tr><td title="Podmínka užití">${n(data.usageCost)}</td></tr><tr><td title="Ověření">${n(data.checkText)}</td></tr><tr><td title="Popis">${n(data.descriptionText)}</td></tr><tr><td title="Efekt na životy">${n(data.damageText)}</td></tr></table>`;
     }
-    if (data.type == "spell") {
-        hint.innerHTML = `<table class="skillHint"><tr><th colspan="3" title="Jméno">${n(data.name)}</th></tr><tr><td title="Cena">${n(data.cost)}</td><td title="Dosah">${n(data.range)}</td><td title="Rozsah">${n(data.target)}</td></tr><tr><td title="Vyvolávání">${t(data.cTime)}</td><td title="Trvání">${t(data.duration)}</td><td title="Obtížnost">${n(data.difficulty)}</td></tr><tr><td colspan="3" title="Ověření">${n(data.check)}</td></tr><tr><td colspan="3" title="Popis">${n(data.text)}</td></tr><tr><td colspan="3" title="Efekt na životy">${n(data.dmg)}</td></tr></table>`;
+    if (data.actionType == "spell") {
+        hint.innerHTML = `<table class="skillHint"><tr><th colspan="3" title="Jméno">${n(data.actionName)}</th></tr><tr><td title="Cena">${n(data.usageCost)}</td><td title="Dosah">${n(data.effectRange)}</td><td title="Rozsah">${n(data.effectTarget)}</td></tr><tr><td title="Vyvolávání">${t(data.castTime)}</td><td title="Trvání">${t(data.effectDuration)}</td><td title="Obtížnost">${n(data.checkDifficulty)}</td></tr><tr><td colspan="3" title="Ověření">${n(data.checkText)}</td></tr><tr><td colspan="3" title="Popis">${n(data.descriptionText)}</td></tr><tr><td colspan="3" title="Efekt na životy">${n(data.damageText)}</td></tr></table>`;
     }
-    if (data.type == "recip") {
-        var senses = data.recognition.split("/");
-        var sens = `<td colspan="3" title="Vzhled">${n(data.recognition)}</td>`;
+    if (data.actionType == "recip") {
+        var senses = data.recognitionText.split("/");
+        var sens = `<td colspan="3" title="Vzhled">${n(data.recognitionText)}</td>`;
         if (senses.length == 3) {
             sens = `<td title="Barva">${n(senses[0])}</td><td title="Chuť">${n(senses[1])}</td><td title="Vůně">${n(senses[2])}</td>`
         }
-        hint.innerHTML = `<table class="skillHint"><tr><th colspan="3" title="Jméno">${n(data.name)}</th></tr><tr><td title="Mana">${n(data.cost)}</td><td title="Suroviny">${n(data.ingredients)}</td><td title="Základ">${n(data.mainIng)}</td></tr><tr><td title="Doba výroby">${t(data.cTime)}</td><td title="Trvání efektu">${t(data.duration)}</td><td title="Obtížnost">${n(data.difficulty)}</td></tr><tr>${sens}</tr><tr><td colspan="3" title="Ověření">${n(data.check)}</td></tr><tr><td colspan="3" title="Popis">${n(data.text)}</td></tr><tr><td colspan="3" title="Efekt na životy">${n(data.dmg)}</td></tr></table>`;
+        hint.innerHTML = `<table class="skillHint"><tr><th colspan="3" title="Jméno">${n(data.actionName)}</th></tr><tr><td title="Mana">${n(data.usageCost)}</td><td title="Suroviny">${n(data.ingredientCost)}</td><td title="Základ">${n(data.baseIngredient)}</td></tr><tr><td title="Doba výroby">${t(data.craftTime)}</td><td title="Trvání efektu">${t(data.effectDuration)}</td><td title="Obtížnost">${n(data.checkDifficulty)}</td></tr><tr>${sens}</tr><tr><td colspan="3" title="Ověření">${n(data.checkText)}</td></tr><tr><td colspan="3" title="Popis">${n(data.descriptionText)}</td></tr><tr><td colspan="3" title="Efekt na životy">${n(data.damageText)}</td></tr></table>`;
     }
 
     var rectBtn = this.getBoundingClientRect();
@@ -863,10 +863,10 @@ function hideHint() {
 }
 
 function setActionsData(btn, data, _) {
-    setGenericBtnTile(btn, data, data.id);
+    setGenericBtnTile(btn, { name: data.actionName, img: data.imagePath }, data.id);
     btn.actionData = data;
     btn.className = "action taken hiddenTitle";
-    if (data.free) {
+    if (data.isReadyToUse) {
         btn.classList.add("free");
         btn.classList.add("selected");
     }
@@ -907,8 +907,8 @@ function availableActions() {
     for (var key in tricksAndMagic) {
         const val = tricksAndMagic[key];
         var add = true;
-        for (var i = 0; i < val.req.length; i++) {
-            if (!requestMet(val.req[i])) {
+        for (var i = 0; i < val.requirements.length; i++) {
+            if (!requestMet(val.requirements[i])) {
                 add = false;
                 break;
             }
@@ -1042,7 +1042,7 @@ function skillUp() {
 }
 
 function selectAction() {
-    if (tricksAndMagic[this.index].free) return;
+    if (tricksAndMagic[this.index].isReadyToUse) return;
     this.classList.toggle("selected");
 }
 

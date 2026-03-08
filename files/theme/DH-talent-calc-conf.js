@@ -1,4 +1,4 @@
-const contPath = "files/theme/";
+﻿const contPath = "files/theme/";
 //const contPath = "0";
 
 function sumUpTo(x) {
@@ -508,7 +508,7 @@ const specialSkills = {
     ],
 
     findBy: function(sel, key, val) {
-        for (spec of this[sel]) {
+        for (let spec of this[sel]) {
             if (spec[key] == val) return spec;
         }
         return false;
@@ -517,58 +517,66 @@ const specialSkills = {
 
 
 class Action {
-    constructor(img, name, cost, req, check, text, dmg, type, free) {
-        this.img = img;
-        this.name = name
-        this.cost = cost;
-        this.req = req;
-        this.check = check;
-        this.text = text;
-        this.dmg = dmg;
-        this.type = type;
-        this.free = free;
+    // Base data shared by tricks, spells and recipes.
+    constructor(imagePath, actionName, usageCost, requirements, checkText, descriptionText, damageText, actionType, isReadyToUse) {
+        this.imagePath = imagePath;
+        this.actionName = actionName;
+        this.usageCost = usageCost;
+        this.requirements = requirements;
+        this.checkText = checkText;
+        this.descriptionText = descriptionText;
+        this.damageText = damageText;
+        this.actionType = actionType;
+        // True means action is immediately usable without first selecting it.
+        this.isReadyToUse = isReadyToUse;
     }
 };
 class TrickA extends Action {
-    constructor(img, name, cost, req, check, text, dmg) {
-        super(img, name, cost, req, check, text, dmg, "trick", true);
+    // All tricks that are available as soon as the skill is picked.
+    constructor(imagePath, actionName, usageCost, requirements, checkText, descriptionText, damageText) {
+        super(imagePath, actionName, usageCost, requirements, checkText, descriptionText, damageText, "trick", true);
     }
 };
-class TrickV extends Action {
-    constructor(img, name, cost, req, check, text, dmg) {
-        super(img, name, cost, req, check, text, dmg, "trick", false);
+class TrickW extends Action {
+    // Warrior tricks, must be selected first depending on lvlup conditions.
+    constructor(imagePath, actionName, usageCost, requirements, checkText, descriptionText, damageText) {
+        super(imagePath, actionName, usageCost, requirements, checkText, descriptionText, damageText, "trick", false);
     }
 };
 class Spell extends Action {
-    constructor(img, name, cost, req, check, text, dmg, free, cTime, duration, range, target, difficulty) {
-        super(img, name, cost, req, check, text, dmg, "spell", free);
-        this.cTime = cTime;
-        this.duration = duration;
-        this.range = range;
-        this.target = target;
-        this.difficulty = difficulty;
+    // Spell extends action with casting metadata.
+    constructor(imagePath, actionName, usageCost, requirements, checkText, descriptionText, damageText, isReadyToUse, castTime, effectDuration, effectRange, effectTarget, checkDifficulty) {
+        super(imagePath, actionName, usageCost, requirements, checkText, descriptionText, damageText, "spell", isReadyToUse);
+        this.castTime = castTime;
+        this.effectDuration = effectDuration;
+        this.effectRange = effectRange;
+        this.effectTarget = effectTarget;
+        this.checkDifficulty = checkDifficulty;
     }
 };
-class SpellV extends Spell {
-    constructor(img, name, cost, req, check, text, dmg, ingredients, mainIng, frequency, cTime, duration, recognition, difficulty) {
-        super(img, name, cost, req, check, text, dmg, false, ingredients, mainIng, frequency, cTime, duration, recognition, difficulty);
+class SpellW extends Spell {
+    // Wizard spells, must be selected first depending on lvlup conditions.
+    constructor(imagePath, actionName, usageCost, requirements, checkText, descriptionText, damageText, castTime, effectDuration, effectRange, effectTarget, checkDifficulty) {
+        super(imagePath, actionName, usageCost, requirements, checkText, descriptionText, damageText, false, castTime, effectDuration, effectRange, effectTarget, checkDifficulty);
     }
 }
 class SpellA extends Spell {
-    constructor(img, name, cost, req, check, text, dmg, ingredients, mainIng, frequency, cTime, duration, recognition, difficulty) {
-        super(img, name, cost, req, check, text, dmg, true, ingredients, mainIng, frequency, cTime, duration, recognition, difficulty);
+    // Cleric and Ranger spells, are available as soon as the skill is picked.
+    constructor(imagePath, actionName, usageCost, requirements, checkText, descriptionText, damageText, castTime, effectDuration, effectRange, effectTarget, checkDifficulty) {
+        super(imagePath, actionName, usageCost, requirements, checkText, descriptionText, damageText, true, castTime, effectDuration, effectRange, effectTarget, checkDifficulty);
     }
 }
 class Recip extends Action {
-    constructor(img, name, cost, req, check, text, dmg, ingredients, mainIng, frequency, cTime, duration, recognition, difficulty) {
-        super(img, name, cost, req, check, text, dmg, "recip", true);
-        this.ingredients = ingredients;
-        this.mainIng = mainIng;
-        this.frequency = frequency;
-        this.cTime = cTime;
-        this.duration = duration;
-        this.recognition = recognition;
-        this.difficulty = difficulty;
+    // Craftable alchemy entry.
+    constructor(imagePath, actionName, usageCost, requirements, checkText, descriptionText, damageText, ingredientCost, baseIngredient, effectFrequency, craftTime, effectDuration, recognitionText, checkDifficulty) {
+        super(imagePath, actionName, usageCost, requirements, checkText, descriptionText, damageText, "recip", true);
+        this.ingredientCost = ingredientCost;
+        this.baseIngredient = baseIngredient;
+        this.effectFrequency = effectFrequency;
+        this.craftTime = craftTime;
+        this.effectDuration = effectDuration;
+        this.recognitionText = recognitionText;
+        this.checkDifficulty = checkDifficulty;
     }
 }
 
@@ -589,27 +597,27 @@ const tricksAndMagic = {
     "lvz": new TrickA("action.png", "Léčba vlastních zranění", "1 A/kolo", ["Válečník"], 0, "Vyléčí 2 životy za kolo", 0),
     "bpr": new TrickA("action.png", "Bojová připravenost", "0 A", ["Válečník"], 0, "Bonus +2 k UČ/OČ jako první akci boje", 0),
     "zut": new TrickA("action.png", "Zuřivý útok", "2 A", ["Válečník"], 0, "Bonus +3 UČ do jednoho útoku", 0),
-    "opr": new TrickV("action.png", "Odražení projektilu", "1 A", ["Válečník", "lv 2"], 0, "Obrana proti projektilům +5", 0),
-    "rpr": new TrickV("action.png", "Rychlý přesun", "1 A", ["Válečník", "lv 2"], 0, "Okamžitá akce krok má 2x dosah", 0),
-    "rud": new TrickV("action.png", "Rychlý úder", "1 A", ["Válečník", "lv 2"], 0, "Iniciatíva +5", 0),
-    "tkr": new TrickV("action.png", "Tvrdý kryt", "1 A", ["Válečník", "sp 6"], 0, "Obrana +2", 0),
-    "uhl": new TrickV("action.png", "Úder hlavicí", "2 A", ["Válečník", "sp 6"], 0, "Při zásahu +1k6+2 zranění", 0),
-    "uas": new TrickV("action.png", "Úhyb a sek", "3 A", ["Válečník", "sp 6"], 0, "Při ubránění se 1 volný útok proti ZO", 0),
-    "but": new TrickV("action.png", "Bezhlavý útok", "1 A", ["Válečník", "sp 7"], 0, "Útok +5; nemožnost se bránit v tomto kole", 0),
-    "dut": new TrickV("action.png", "Drtivý útok", "2 A", ["Válečník", "sp 7"], 0, "Zranění útoku +5", 0),
-    "kse": new TrickV("action.png", "Kruhový sek", "3 A", ["Válečník", "sp 7"], 0, "Zásah kolem sebe -2UČ kumulativně", 0),
-    "usk": new TrickV("action.png", "Úskok", "1 A", ["Válečník", "sp 8"], 0, "Obrana +2 do konce kola", 0),
-    "uzo": new TrickV("action.png", "Útok z obrany", "2 A", ["Válečník", "sp 8"], 0, "Zraní útočníka za Obrana-Útok životů", 0),
-    "vyp": new TrickV("action.png", "Výpad", "3 A", ["Válečník", "sp 8"], 0, "Zranění +1k6 krvácení", 0),
-    "tpo": new TrickV("action.png", "Trpasličí polibek", "1 A", ["Válečník", "sp 9"], "SIL vs OBR", "Útok čelem za SIL zranění", 0),
-    "snz": new TrickV("action.png", "Stržení na zem", "2 A", ["Válečník", "sp 9"], "SIL vs OBR -> OBR vs SIL", "Místo útoku povalí a drží cíl na zemi", 0),
-    "nkl": new TrickV("action.png", "Nordický klíč", "3 A", ["Válečník", "sp 9"], "SIL vs OBR", "Automatická obrana + pohmoždění ruky (-5), jinak jen ZO", 0),
-    "uav": new TrickV("action.png", "Útok a vrh", "1 A", ["Válečník", "sp 10"], 0, "Útok vrhací zbraní po hlavním útoku navíc", 0),
-    "dob": new TrickV("action.png", "Dvojitá obrana", "2 A", ["Válečník", "sp 10"], 0, "Jedna obrana navíc", 0),
-    "vut": new TrickV("action.png", "Vířivý útok", "3 A", ["Válečník", "sp 10"], 0, "Útok +5", 0),
-    "sst": new TrickV("action.png", "Sražení štítem", "1 A", ["Válečník", "sp 11"], "SIL vs OBR", "Zranění +1k6 + povalení + otřesení", 0),
-    "uss": new TrickV("action.png", "Útok spoza štítu", "2 A", ["Válečník", "sp 11"], 0, "Útok +2", 0),
-    "zam": new TrickV("action.png", "Zámek", "3 A", ["Válečník", "sp 11"], "SIL vs OBR -> OBR vs SIL", "Obránce uzamkne útočníkovu zbraň", 0),
+    "opr": new TrickW("action.png", "Odražení projektilu", "1 A", ["Válečník", "lv 2"], 0, "Obrana proti projektilům +5", 0),
+    "rpr": new TrickW("action.png", "Rychlý přesun", "1 A", ["Válečník", "lv 2"], 0, "Okamžitá akce krok má 2x dosah", 0),
+    "rud": new TrickW("action.png", "Rychlý úder", "1 A", ["Válečník", "lv 2"], 0, "Iniciatíva +5", 0),
+    "tkr": new TrickW("action.png", "Tvrdý kryt", "1 A", ["Válečník", "sp 6"], 0, "Obrana +2", 0),
+    "uhl": new TrickW("action.png", "Úder hlavicí", "2 A", ["Válečník", "sp 6"], 0, "Při zásahu +1k6+2 zranění", 0),
+    "uas": new TrickW("action.png", "Úhyb a sek", "3 A", ["Válečník", "sp 6"], 0, "Při ubránění se 1 volný útok proti ZO", 0),
+    "but": new TrickW("action.png", "Bezhlavý útok", "1 A", ["Válečník", "sp 7"], 0, "Útok +5; nemožnost se bránit v tomto kole", 0),
+    "dut": new TrickW("action.png", "Drtivý útok", "2 A", ["Válečník", "sp 7"], 0, "Zranění útoku +5", 0),
+    "kse": new TrickW("action.png", "Kruhový sek", "3 A", ["Válečník", "sp 7"], 0, "Zásah kolem sebe -2UČ kumulativně", 0),
+    "usk": new TrickW("action.png", "Úskok", "1 A", ["Válečník", "sp 8"], 0, "Obrana +2 do konce kola", 0),
+    "uzo": new TrickW("action.png", "Útok z obrany", "2 A", ["Válečník", "sp 8"], 0, "Zraní útočníka za Obrana-Útok životů", 0),
+    "vyp": new TrickW("action.png", "Výpad", "3 A", ["Válečník", "sp 8"], 0, "Zranění +1k6 krvácení", 0),
+    "tpo": new TrickW("action.png", "Trpasličí polibek", "1 A", ["Válečník", "sp 9"], "SIL vs OBR", "Útok čelem za SIL zranění", 0),
+    "snz": new TrickW("action.png", "Stržení na zem", "2 A", ["Válečník", "sp 9"], "SIL vs OBR -> OBR vs SIL", "Místo útoku povalí a drží cíl na zemi", 0),
+    "nkl": new TrickW("action.png", "Nordický klíč", "3 A", ["Válečník", "sp 9"], "SIL vs OBR", "Automatická obrana + pohmoždění ruky (-5), jinak jen ZO", 0),
+    "uav": new TrickW("action.png", "Útok a vrh", "1 A", ["Válečník", "sp 10"], 0, "Útok vrhací zbraní po hlavním útoku navíc", 0),
+    "dob": new TrickW("action.png", "Dvojitá obrana", "2 A", ["Válečník", "sp 10"], 0, "Jedna obrana navíc", 0),
+    "vut": new TrickW("action.png", "Vířivý útok", "3 A", ["Válečník", "sp 10"], 0, "Útok +5", 0),
+    "sst": new TrickW("action.png", "Sražení štítem", "1 A", ["Válečník", "sp 11"], "SIL vs OBR", "Zranění +1k6 + povalení + otřesení", 0),
+    "uss": new TrickW("action.png", "Útok spoza štítu", "2 A", ["Válečník", "sp 11"], 0, "Útok +2", 0),
+    "zam": new TrickW("action.png", "Zámek", "3 A", ["Válečník", "sp 11"], "SIL vs OBR -> OBR vs SIL", "Obránce uzamkne útočníkovu zbraň", 0),
     //hra
     "nuk": new SpellA("spell.png", "Najdi úkryt", "3 DS", ["Hraničář", "sk 200"], 0, "Nalezne přírodní úkryt (převis, dutý kmen, jeskyni)", 0, 1, 1, "-", "1 míle", "8"),
     "nvo": new SpellA("spell.png", "Najdi vodu", "3 DS", ["Hraničář", "sk 200"], 0, "Nalezne přírodní zdroj pitné vody", 0, 1, 1, "-", "1 míle", "6"),
@@ -637,22 +645,56 @@ const tricksAndMagic = {
     "vbe": new Recip("recip.png", "Vak beztíže", "100 MP", ["Alchymista", "sp 10", "sk 302"], 0, "Vak o objemu 20 l, cokoliv plně uvnitř nic neváží", 0, "200 sur", "vak, démon z poledne", 0, 2 * den, 2 * rok, "vak", "14"),
     "lsi": new Recip("recip.png", "Lektvar Sibériův", "X MP", ["Alchymista", "sp 9", "sk 302"], 0, "Zvýší atribut +Y dle dodané many a základu", 0, "80 sur", "svaly/šlechy/játra/mozek/oči", 1 * den, 12 * hodina, 10 * minuta, "žlutá tekutina", "12"),
     //kou
-    "mtr": new SpellV("spell.png", "Magický trik", "1 MP", ["Kouzelník", "sk 400"], 0, "Iluze ve vzduchu, zvuky, obrázky, změna chuti/barvy", 0, 1 * kolo, "ihned/záleží", "4+lvl sáhů", "1 objekt", 0),
-    "bza": new SpellV("spell.png", "Bertolduv zámek", "1+X MP", ["Kouzelník", "sk 400"], "Atletika(SIL) vs dveře+X", "Zamkne a zvyšuje odolnost dveří, oken, brány, truhly, ... i bez zámku", 0, 2 * kolo, 1 * hodina, "dotek", "1 otevíratelný objekt", "6"),
-    "ble": new SpellV("spell.png", "Blesk", "1+2X MP", ["Kouzelník", "sk 400"], 0, "Výboj energie", "Xk6 magické", pul, 0, "20 sáhů", "1 tvor", "4+2X"),
-    "kuk": new SpellV("spell.png", "Kukátko", "2 MP", ["Kouzelník", "sk 400"], 0, "Prohlédne přes pevnou překážku", 0, 1 * kolo, 1 * minuta, "dotek", "zeď/dveře 1x1x1 sáh", "6"),
-    "lev": new SpellV("spell.png", "Levitace", "4+X MP", ["Kouzelník", "sk 400"], 0, "Levitace nad zemí předmětů/tvorů do hmotnosti 100 +20*X lb", 0, 1 * kolo, 15 * minuta, "dotek", "1 tvor/předmět", "6"),
-    "mst": new SpellV("spell.png", "Magická střela", "1+7*X MP", ["Kouzelník", "sk 400"], 0, "Výboj explodující energie proti magickým tvorům", "2k6 *X magické v rozsahu", 1 * kolo, 0, "100 sáhů", "mag.bystosti do 3+X*2 sáhů", "6+X*2"),
-    "msi": new SpellV("spell.png", "Magický štít", "1+XMP", ["Kouzelník", "sk 400"], 0, "Magická bariéra +5 ZO", 0, pul, "X", "dotek", "1 tvor", "6"),
-    "npr": new SpellV("spell.png", "Najdi předmět", "4 MP", ["Kouzelník", "sk 400"], 0, "Vycítí pozici hledaného předmětu", 0, 5 * kolo, 15 * kolo, "50 sáhů", "1 předmět", "6/11"),
-    "nev": new SpellV("spell.png", "Neviditelnost", "6 MP", ["Kouzelník", "sk 400"], 0, "Neviditelnost do vyprchání, promluvení, útoku, či náročnější akce", 0, 1 * kolo, 15 * minuta, "50 sáhů", "1 tvor/předmět max C", "6"),
-    "ozb": new SpellV("spell.png", "Očaruj zbraň", "4 MP", ["Kouzelník", "sk 400"], 0, "Zbraň se stává magickou", 0, 2 * kolo, 15 * minuta, "dotek", "1 zbraň", 6),
-    "ohe": new SpellV("spell.png", "Oheň", "2 MP", ["Kouzelník", "sk 400"], 0, "Oheň magicky hořící v prostoru do zásahu živé tvory", "1-3 ohněm", 1 * kolo, 15 * minuta, "10 sáhů", "-", "6"),
-    "ryc": new SpellV("spell.png", "Rychlost", "1+X MP", ["Kouzelník", "sk 400"], 0, "+1 útok/obrana +2 OČ/init/dovednosti(OBR) pohyblivost*2", 0, 1 * kolo, "X kol", "10 sáhů", "1 tvor", "6"),
-    "sve": new SpellV("spell.png", "Světlo", "X MP", ["Kouzelník", "sk 400"], 0, "Drobná koule s jasným světlem vybrané barvy do 2*X sáhů", 0, 1 * kolo, 1 * hodina, "30 sáhů", "-", "6"),
-    "tel": new SpellV("spell.png", "Teleport", "4 MP", ["Kouzelník", "sk 400"], 0, "Přesun jednoho tvora do vel C max na 60 sáhů", 0, 1 * kolo, 0, "dotek", "1 tvor", "6"),
-    "oko": new SpellV("spell.png", "Ohnivá koule", "4+4*X MP", ["Kouzelník", "sk 400", "sp 6"], 0, "Zapalujicí ohnivá koule jako projektil", "2*Xk10 mag.ohněm v rozsahu 3+X sáhů", 1 * kolo, 0, "120 sáhů", "přímá linka / výbuch", "4+4*X"),
-    "dvo": new SpellV("spell.png", "Dvojník", "3*X MP", ["Kouzelník", "sk 400", "sp 10"], "Vůle(CHA) vs Vůle(CHA) cílů", "Zasaženým vnutí imaginární obraz tvora, která může mluvit, nutné soustředění", 0, 1, "5*X minut", "60 sáhů", "tvorové do 20 sáhů", "8"),
+    "mtr": new SpellA("spell.png", "Magický trik", "1 MP", ["Kouzelník", "sk 400"], 0, "Iluze ve vzduchu, zvuky, obrázky, změna chuti/barvy", 0, 1 * kolo, "ihned/záleží", "4+lvl sáhů", "1 objekt", 0),
+    "bza": new SpellW("skill/special/kou/ochranna_magie.png", "Bertolduv zámek", "1+X MP", ["Kouzelník", "sk 400"], "Atletika(SIL) vs dveře+X", "Zamkne a zvyšuje odolnost dveří, oken, brány, truhly, ... i bez zámku", 0, 2 * kolo, 1 * hodina, "dotek", "1 otevíratelný objekt", "6"),
+    "ble": new SpellW("skill/special/kou/divoka_magie.png", "Blesk", "1+2X MP", ["Kouzelník", "sk 400"], 0, "Výboj energie", "Xk6 magické", pul, 0, "20 sáhů", "1 tvor", "4+2X"),
+    "kuk": new SpellW("skill/special/kou/magie_promen.png", "Kukátko", "2 MP", ["Kouzelník", "sk 400"], 0, "Prohlédne přes pevnou překážku", 0, 1 * kolo, 1 * minuta, "dotek", "zeď/dveře 1x1x1 sáh", "6"),
+    "lev": new SpellW("skill/special/kou/vysoka_magie.png", "Levitace", "4+X MP", ["Kouzelník", "sk 400"], 0, "Levitace nad zemí předmětů/tvorů do hmotnosti 100 +20*X lb", 0, 1 * kolo, 15 * minuta, "dotek", "1 tvor/předmět", "6"),
+    "mst": new SpellW("skill/special/kou/divoka_magie.png", "Magická střela", "1+7*X MP", ["Kouzelník", "sk 400"], 0, "Výboj explodující energie proti magickým tvorům", "2k6 *X magické v rozsahu", 1 * kolo, 0, "100 sáhů", "mag.bystosti do 3+X*2 sáhů", "6+X*2"),
+    "msi": new SpellW("skill/special/kou/ochranna_magie.png", "Magický štít", "1+XMP", ["Kouzelník", "sk 400"], 0, "Magická bariéra +5 ZO", 0, pul, "X", "dotek", "1 tvor", "6"),
+    "npr": new SpellW("skill/special/kou/vysoka_magie.png", "Najdi předmět", "4 MP", ["Kouzelník", "sk 400"], 0, "Vycítí pozici hledaného předmětu", 0, 5 * kolo, 15 * kolo, "50 sáhů", "1 předmět", "6/11"),
+    "nev": new SpellW("skill/special/kou/magie_promen.png", "Neviditelnost", "6 MP", ["Kouzelník", "sk 400"], 0, "Neviditelnost do vyprchání, promluvení, útoku, či náročnější akce", 0, 1 * kolo, 15 * minuta, "50 sáhů", "1 tvor/předmět max C", "6"),
+    "ozb": new SpellW("skill/special/kou/magie_promen.png", "Očaruj zbraň", "4 MP", ["Kouzelník", "sk 400"], 0, "Zbraň se stává magickou", 0, 2 * kolo, 15 * minuta, "dotek", "1 zbraň", 6),
+    "ohe": new SpellW("skill/special/kou/divoka_magie.png", "Oheň", "2 MP", ["Kouzelník", "sk 400"], 0, "Oheň magicky hořící v prostoru do zásahu živé tvory", "1-3 ohněm", 1 * kolo, 15 * minuta, "10 sáhů", "-", "6"),
+    "ryc": new SpellW("skill/special/kou/vitalni_magie.png", "Rychlost", "1+X MP", ["Kouzelník", "sk 400"], 0, "+1 útok/obrana +2 OČ/init/dovednosti(OBR) pohyblivost*2", 0, 1 * kolo, "X kol", "10 sáhů", "1 tvor", "6"),
+    "sve": new SpellW("skill/special/kou/divoka_magie.png", "Světlo", "X MP", ["Kouzelník", "sk 400"], 0, "Drobná koule s jasným světlem vybrané barvy do 2*X sáhů", 0, 1 * kolo, 1 * hodina, "30 sáhů", "-", "6"),
+    "tel": new SpellW("skill/special/kou/vysoka_magie.png", "Teleport", "4 MP", ["Kouzelník", "sk 400"], 0, "Přesun jednoho tvora do vel C max na 60 sáhů", 0, 1 * kolo, 0, "dotek", "1 tvor", "6"),
+    "amb": new SpellW("skill/special/kou/ochranna_magie.png", "Antimagická bariéra", "3 + X MP", ["Kouzelník", "sp 7"], 0, "Aura chrání kouzelníka dle dodané many. Cizí cílené kouzla odčerpaji svou cenu, plošné 1/4 své ceny.", 0, "půl kola", "2 hodiny", "–", "kouzelník", "10"), 
+    "ber": new SpellW("skill/special/kou/divoka_magie.png", "Beranidlo", "dle cíle (viz tabulka) MP", ["Kouzelník", "sp 6"], "Sesílání kouzel (INT) vs. Atletika (SIL) cíle (pro úhyb)", "Průrazná vlna do překážky (dveře/stěna); tvory odhodí/povalí (neubližuje).", 0, "2 kola", "ihned", "10 sáhů", "1 překážka", "8"), 
+    "brc": new SpellW("skill/special/kou/mentalni_magie.png", "Břichomluvectví", "3 MP za 10 sáhů", ["Kouzelník", "sp 10"], "Vůle (CHAR) kouzelníka vs. Vůle (CHAR) cílů", "Vkládá zvuky/hlas do vybraného místa v dosahu; slyší je jen živí inteligentní tvorové (lze měnit zdroj přidáním 1 MP).", 0, "1 kolo", "15 minut (1 směna)", "dle dodané many", "koule o poloměru dle many", "6"), 
+    "ciz": new SpellW("skill/special/kou/vysoka_magie.png", "Cizí jazyk", "9 MP", ["Kouzelník", "sp 11"], 0, "Sesilatel rozumí a mluví cizí řečí (neplatí na psaný text).", 0, "2 kola", "15 minut (1 směna)", "–", "kouzelník", "8"), 
+    "dlr": new SpellW("skill/special/kou/magie_promen.png", "Dlouhá ruka", "2 MP", ["Kouzelník", "sp 8"], 0, "Ruka se protáhne až na 10 sáhů (plazí se po povrchu, neumí útočit; lze brát věci, odemykat, spouštět pasti).", 0, "3 kola", "15 kol", "–", "kouzelník", "8"), 
+    "dup": new SpellW("skill/special/kou/vitalni_magie.png", "Dotek upíra", "5 MP", ["Kouzelník", "sp 9"], 0, "Při zásahu vysaje 1k6 životů a polovinu si kouzelník hned přidá (jen na živé).", "1k6 (polovina léčí sesilatele)", "1 kolo", "5 kol", "–", "kouzelník", "10"), 
+    "dvo": new SpellW("skill/special/kou/mentalni_magie.png", "Dvojník", "3 MP za směnu", ["Kouzelník", "sp 10"], "Vůle (CHAR) vs. Vůle", "Vsugeruje dokonalou mentální iluzi tvora; nehmotná, vyžaduje soustředění.", 0, "1 kolo", "15 minut (1 směna)", "100 sáhů", "kruh o poloměru 10 sáhů", "8"), 
+    "let": new SpellW("skill/special/kou/vysoka_magie.png", "Leť", "1 MP za 2 kola", ["Kouzelník", "sp 11"], 0, "Cíl umí létat (max ~30 sáhů/kolo), ale musí se soustředit a nemůže dělat jiné akce.", 0, "2 kola", "dle dodané many", "dotek", "1 tvor", "8"), 
+    "mgz": new SpellW("skill/special/kou/ochranna_magie.png", "Magická zbroj", "3 + X MP", ["Kouzelník", "sp 7"], 0, "Neviditelná aura zvyšuje ZO: za každé +4 MP navíc +1 k obraně (kombinovatelná se zbrojí/kouzly).", 0, "půl kola", "15 minut (1 směna)", "dotek", "1 tvor", "8"), 
+    "met": new SpellW("skill/special/kou/magie_promen.png", "Metamorfóza", "6 MP", ["Kouzelník", "sp 8"], 0, "Promění sesilatele v živou bytost podobné velikosti; přebírá fyzické rysy a nemagické přirozené schopnosti.", 0, "2 kola", "15 minut (1 směna)", "40 sáhů", "kouzelník", "10"), 
+    "mlh": new SpellW("skill/special/kou/magie_promen.png", "Mlha", "1 MP za 10 sáhů poloměru", ["Kouzelník", "sp 8"], 0, "Hustá nejedovatá mlha, viditelnost v ní max 2 sáhy; může se vázat na místo nebo se sesilatelem.", 0, "2 kola", "15 minut (1 směna)", "30 sáhů", "kruh o poloměru dle many", "8"), 
+    "mrs": new SpellW("skill/special/kou/divoka_magie.png", "Mrazivá střela", "7 MP za první, 6 MP za každou další", ["Kouzelník", "sp 6"], 0, "Ledová střela vybuchne do krystalů; více střel v kole se spojí (větší rozsah i zranění).", "2k10 (plošně)", "1 kolo", "ihned", "120 sáhů", "koule o poloměru 5 sáhů (+2/s další)", "8 (+2/každá další)"), 
+    "nkj": new SpellW("skill/special/kou/vysoka_magie.png", "Najdi kouzla", "3 MP", ["Kouzelník", "sp 11"], 0, "Zviditelní magická rezidua a aktivní kouzla v okolí (identifikace přesná jen pro známá kouzla).", 0, "3 kola", "10 kol (1 minuta)", "–", "magická rezidua v okruhu 30 sáhů", "8"), 
+    "npo": new SpellW("skill/special/kou/ochranna_magie.png", "Naruš pozornost", "4 + X MP", ["Kouzelník", "sp 7"], 0, "Bolest hlavy, pískot v uších; +5 k obtížnosti akcí vyžadujících soustředění (lze dál zvyšovat za MP navíc).", 0, "půl kola", "1 kolo", "40 sáhů", "1 tvor", "8"), 
+    "noc": new SpellW("skill/special/kou/mentalni_magie.png", "Noční můra", "4 MP", ["Kouzelník", "sp 10"], "Vůle (CHAR) vs. Vůle", "Postihuje spánek děsy; po probuzení se léčí jen 1 Ž, opakování přidává únavu a ztráty Ž.", 0, "5 kol", "1 hodina", "30 sáhů", "1 tvor", "10"), 
+    "ohc": new SpellW("skill/special/kou/divoka_magie.png", "Ohnivá čepel", "5 MP", ["Kouzelník", "sp 6"], 0, "Čepel planoucí magickým ohněm; každý zásah +1–3 Ž (1k6/2), může zapalovat.", "+1–3 k zásahu (1k6/2)", "1 kolo", "10 kol (1 minuta)", "dotek", "1 zbraň", "8"), 
+    "ohk": new SpellW("skill/special/kou/divoka_magie.png", "Ohnivá koule", "5 MP za každou kouli", ["Kouzelník", "sp 6"], 0, "Letící plamenná koule exploduje; více koulí v kole se spojí (větší rozsah i zranění), zapaluje hořlaviny.", "2k6 (plošně)", "1 kolo", "ihned", "60 sáhů", "koule o poloměru 5 sáhů (+2/s další)", "10 (+2/každá další)"), 
+    "ops": new SpellW("skill/special/kou/ochranna_magie.png", "Ochrana před střelami", "3 + X MP", ["Kouzelník", "sp 7"], 0, "Kupole zastavuje rychlé střely; každá střela odčerpá z dodatečné many (nelze střílet ven, magie prochází).", 0, "půl kola", "2 hodiny", "dotek", "koule kolem cíle, r=2 sáhy", "8"), 
+    "och": new SpellW("skill/special/kou/mentalni_magie.png", "Ochromení", "3× úroveň cíle MP", ["Kouzelník", "sp 10"], "Vůle (CHAR) vs. Vůle", "Paralyzuje cíl (strnulý, nemůže mluvit/mrkat); vyžaduje soustředění sesilatele.", 0, "1 kolo", "15 minut (1 směna)", "30 sáhů", "1 tvor", "12"), 
+    "okz": new SpellW("skill/special/kou/vysoka_magie.png", "Oko zření", "8 MP", ["Kouzelník", "sp 11"], 0, "Sesilatel vidí neviditelné tvory/předměty; mají pro něj slabou zářící auru.", 0, "2 kola", "15 minut (1 směna)", "–", "kouzelník", "10"), 
+    "plr": new SpellW("skill/special/kou/divoka_magie.png", "Plamenné ruce", "4 MP", ["Kouzelník", "sp 6"], 0, "Z rukou šlehají plameny (šířka ~30 coulů, dosah 2 sáhy); při útoku celé kolo 1k6 Ž a snadno zapaluje.", "1k6", "1 kolo", "3 kola", "2 sáhy", "kouzelník", "8"), 
+    "pov": new SpellW("skill/special/kou/divoka_magie.png", "Poryv větru", "2 MP", ["Kouzelník", "sp 6"], 0, "Náhlý poryv větru (typicky nepohne >5 lb); pás 1 sáh × 10 sáhů.", 0, "1 kolo", "1 kolo", "50 sáhů", "pás 1×10 sáhů", "8"), 
+    "pos": new SpellW("skill/special/kou/vitalni_magie.png", "Posílení smyslu", "2 MP", ["Kouzelník", "sp 9"], 0, "Zvýší citlivost vybraného smyslu (zrak/sluch/čich/hmat/chuť); dává Výhodu (+5) na hody s tímto smyslem.", 0, "1 kolo", "15 minut (1 směna)", "dotek", "1 tvor", "8"), 
+    "pzl": new SpellW("skill/special/kou/vitalni_magie.png", "Pouto života", "3 MP za kolo", ["Kouzelník", "sp 9"], 0, "Sdílí zranění mezi cílem a sesilatelem (rovnoměrně). Vyžaduje soustředění; vyrušení/bezvědomí ruší efekt.", 0, "půl kola", "dle dodané many", "20 sáhů", "1 tvor", "12"), 
+    "ptp": new SpellW("skill/special/kou/magie_promen.png", "Protoplazma", "4 MP", ["Kouzelník", "sp 8"], "Sesílání kouzel (INT) vs. Reflex", "Lepivý sliz omezuje pohyb (poloviční rychlost, Nevýhoda -5 na obratnostní akce/obranu/iniciativu/kouzlení); do velikosti C.", 0, "1 kolo", "4 kola", "15 sáhů", "1 tvor", "10"), 
+    "prn": new SpellW("skill/special/kou/vitalni_magie.png", "Přivolej nemrtvé", "4 MP", ["Kouzelník", "sp 9"], 0, "Vábí nemrtvé v širokém okolí na vybrané místo (ignorují bojující; inteligentní s podezřením mohou odolat).", 0, "1 kolo", "ihned", "100 sáhů", "kruh o poloměru 50 sáhů", "12"), 
+    "rzk": new SpellW("skill/special/kou/ochranna_magie.png", "Rozptyl kouzlo", "3 + X MP (X = cena rušeného kouzla)", ["Kouzelník", "sp 7"], "Sesílání kouzel (INT) vs. obtížnost rušeného kouzla", "Zruší cizí kouzlo, pokud je vloženo dost MP a padne hod přes obtížnost původního kouzla.", 0, "3 kola", "ihned", "10 sáhů", "1 kouzlo", "dle cíle"), 
+    "sch": new SpellW("skill/special/kou/ochranna_magie.png", "Schránka", "2 MP", ["Kouzelník", "sp 7"], 0, "Černá neprůhledná aura hermeticky chrání předmět velikosti hlávky zelí; nelze ji otevřít dřív.", 0, "1 kolo", "1 hodina (4 směny)", "dotek", "1 předmět (vel. hlávky zelí)", "10"), 
+    "sug": new SpellW("skill/special/kou/mentalni_magie.png", "Sugesce", "3 + úroveň cíle MP", ["Kouzelník", "sp 10"], "Vůle (CHAR) vs. Vůle", "Vsugeruje cítění/pocit (hlad, vztek, bolest atd.).", 0, "2 kola", "30 minut (2 směny)", "30 sáhů", "1 tvor", "10"), 
+    "tad": new SpellW("skill/special/kou/magie_promen.png", "Tajemné dveře (Porta Arcánum)", "5 MP", ["Kouzelník", "sp 8"], 0, "Dveře vypadají jako stěna a dočasně se chovají jako skutečná zeď; nejdou otevřít/odemknout.", 0, "1 kolo", "10 kol (1 minuta)", "10 sáhů", "1 dveře", "10"), 
+    "tlk": new SpellW("skill/special/kou/vysoka_magie.png", "Telekineze", "3 MP za libru", ["Kouzelník", "sp 11"], 0, "Na dálku pohybuje jedním viděným předmětem (rychlost 6 sáhů/kolo); přímé držení předmětu kouzlo nepřetlačí.", 0, "1 kolo", "6 kol", "30 sáhů", "1 předmět", "8"), 
+    "tem": new SpellW("skill/special/kou/magie_promen.png", "Temnota", "1 MP za 2 sáhy poloměru (2× cena = viditelnost uvnitř)", ["Kouzelník", "sp 8"], 0, "Prostor uvnitř je neproniknutelně tmavý (ruší i noční vidění); lze vázat na místo nebo na sesilatele.", 0, "1 kolo", "10 kol (1 minuta)", "30 sáhů", "koule o poloměru dle many", "8"), 
+    "tic": new SpellW("skill/special/kou/vysoka_magie.png", "Ticho", "2 MP za sáh poloměru (2× cena = slyší se uvnitř)", ["Kouzelník", "sp 11"], 0, "V oblasti je absolutní ticho (uvnitř neslyší nic; zvenku dovnitř slyšet je). Lze navázat na sesilatele.", 0, "1 kolo", "1 hodina (4 směny)", "20 sáhů", "koule o poloměru dle many", "8"), 
+    "vtr": new SpellW("skill/special/kou/vitalni_magie.png", "Vitální transfer (Trans Vitális)", "1 + X MP", ["Kouzelník", "sp 9"], 0, "Sesilatel přenáší své životy do cíle (za každý MP navíc si 1 Ž odečte a cíl 1 Ž získá; max polovina vlastního maxima).", "léčí: X (za cenu vlastních Ž)", "2 kola", "ihned", "dotek", "1 tvor", "8"), 
+    "viz": new SpellW("skill/special/kou/mentalni_magie.png", "Vize", "3 MP za každých 5 minut", ["Kouzelník", "sp 10"], "Vůle (CHAR) vs. Vůle", "Vsugeruje obraz/scénu, kterou cíl vidí jako skutečnou (i místa, která sesilatel nezná).", 0, "2 kola", "dle dodané many", "100 sáhů", "1 tvor", "10"), 
+    "vod": new SpellW("skill/special/kou/vitalni_magie.png", "Voodoo", "5 MP (10 MP bez figurky s částí těla)", ["Kouzelník", "sp 9"], "Vůle (CHAR) vs. Vůle", "Po přípravě a úspěchu způsobuje bodnutí do figurky nesnesitelnou bolest a dočasné postihy v odpovídající části těla.", 0, "2 kola (+5 minut příprava)", "4 kola", "40 sáhů", "1 tvor", "12"),
     //zlo
     "bbz": new TrickA("action.png", "Boj beze zbraně", "volné ruce", ["Zloděj"], 0, "Bonus +3/3 pro boj beze zbraně (max.okov. rukavice)", 0),
     "lez": new TrickA("skill/special/zlo/lezeni.png", "Lezení", "", ["Zloděj", "sp 6"], "U.Kočičího pohybu(OBR) vs X", "Lezení 2 sáhy za kolo jednou za 5/10 sáhů", 0),
@@ -683,10 +725,13 @@ const tricksAndMagic = {
     "hvi": new SpellA("spell.png", "Hlas víry", "3 BP", ["Klerik", "lv 2", "sk 600"], 0, "Zvýší hlasitost, +5 zastrašování", 0, 2 * kolo, 5 * minuta, "-", "-", "8"),
     "ntm": new SpellA("spell.png", "Najdi temnotu", "4 BP", ["Klerik", "sk 200", "sp 8"], 0, "Uvidí neviděné, nemrtvé a temné a nadpozemské tvory, požehnání i kletby", 0, 3 * kolo, 1 * minuta, "-", "-", "8"),
     "nte": new SpellA("spell.png", "Napravení těla", "5 BP", ["Klerik", "sk 200", "sp 9"], "Vůle(CHA) vs Vůle(CHA)", "Vyléčí / poraní končetinu", "1k6 léčení / nic", 2 * kolo, "0/1 minuta", "dotek", "1 tvor", "10"),
-    //"": new Trick("action.png","name","A", [""], 0, "0", 0),
-    //"": new Recep("recipe.png","name", , ["Alchymista"], 0, "0", "0", "0", "0", 0, , , "0", ),
-    //"": new Spell("spell.png","name", " MP", [""], 0, "text", dmg, cTime, duration, "range", "target", diff),
+    //"": new TrickA("action.png", "name", "A", [""], 0, "0", 0),
+    //"": new TrickW("action.png", "name", "A", [""], 0, "0", 0),
+    //"": new SpellA("spell.png", "name", " MP", [""], 0, "text", dmg, castTime, effectDuration, "effectRange", "effectTarget", checkDifficulty),
+    //"": new SpellW("spell.png", "name", " MP", [""], 0, "text", dmg, castTime, effectDuration, "effectRange", "effectTarget", checkDifficulty),
     // "zkratka": new Recip("název", "XYZ MP - cena", ["kódPovolání","omezení lvlu","kód potřebné schopnosti"], "Ověření účinku Vůle(CHA) vs Reflex(OBR)", "popis", "účinek na životy", "mn.surovin: 50 sur", "výrobní základ", "četnost v h", "doba výroby", "dobatrvání efektu", "vzhled/popis", "obtížnost"),
-    // "zkratka": new Spell("název", "cena", ["kódPovolání","omezení lvlu","kód potřebné schopnosti"], "Ověření účinku Vůle(CHA) vs Reflex(OBR)", "popis", "účinek na životy", "doba kouzelní", "dobatrvání efektu", "dosah", "rozsah", "obtížnost"),
-    // "zkratka": new Trick("název", "cena/podmínky", ["kódPovolání","omezení lvlu","kód potřebné schopnosti"], "Ověření účinku Vůle(CHA) vs Reflex(OBR)", "popis", "účinek na životy"),
+    // "zkratka": new SpellA("název", "cena", ["kódPovolání","omezení lvlu","kód potřebné schopnosti"], "Ověření účinku Vůle(CHA) vs Reflex(OBR)", "popis", "účinek na životy", "doba kouzlení", "dobatrvání efektu", "dosah", "rozsah", "obtížnost"),
+    // "zkratka": new SpellW("název", "cena", ["kódPovolání","omezení lvlu","kód potřebné schopnosti"], "Ověření účinku Vůle(CHA) vs Reflex(OBR)", "popis", "účinek na životy", "doba kouzlení", "dobatrvání efektu", "dosah", "rozsah", "obtížnost"),
+    // "zkratka": new TrickA("název", "cena/podmínky", ["kódPovolání","omezení lvlu","kód potřebné schopnosti"], "Ověření účinku Vůle(CHA) vs Reflex(OBR)", "popis", "účinek na životy"),
+    // "zkratka": new TrickW("název", "cena/podmínky", ["kódPovolání","omezení lvlu","kód potřebné schopnosti"], "Ověření účinku Vůle(CHA) vs Reflex(OBR)", "popis", "účinek na životy"),
 };
