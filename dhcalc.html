@@ -2,7 +2,7 @@
 <script src="files/theme/DH-talent-calc-conf.js"></script>
 <script src="files/theme/DH-talent-calc-func.js"></script>
 
-<h1>Talenty pro Dračí Hlídku <button class="control" onclick="myImport()">Načti</button> <button class="control" onclick="myExport()">Ulož</button><button class="control" onclick="reset()">Reset</button></h1>
+<h1>Talenty pro Dračí Hlídku <button class="control" onclick="myImport()">Načti</button> <button class="control" onclick="myExport()">Ulož</button><button class="control" onclick="reset()">Reset</button> <label id="darkModeToggleLabel" title="Přepnout tmavý režim"><input id="darkModeToggle" type="checkbox" onchange="toggleDarkMode(this.checked)"> Dark mode</label></h1>
 <div id="setting">
     <div class="left">
     <input id="INPclass" style="display: none;" value="Válečník" disabled/>
@@ -152,8 +152,9 @@
     }
 </script>
 <div id="helper"></div>
-<div id="footer"></div>
-<footer>
+<button id="footerShowBtn" type="button" title="Zobrazit poděkování" onclick="showFooterPanel()" style="position: fixed; right: 10px; bottom: 10px; display: none; z-index: 1000;">Poděkování</button>
+<footer id="pageFooter" style="position: relative;">
+    <button id="footerHideBtn" type="button" title="Skrýt poděkování" onclick="hideFooterPanel()" style="position: absolute; right: 8px; top: 8px; z-index: 2;">X</button>
     <div id="thanks">
         <h2>S poděkováním <a href="dracihlidka.cz">Dračí Hlídka</a></h2>
         <dl>
@@ -170,4 +171,36 @@
             <dt><a href="https://discord.gg/KTmXRvM">Komunita Discord DH</a></dt>
             <dd>Debugování a nápady</dd>
         </dl>
+    </div>
 </footer>
+<script>
+    function toggleDarkMode(enabled) {
+        document.body.classList.toggle("dark-mode", enabled);
+        localStorage.setItem("dh-dark-mode", enabled ? "1" : "0");
+    }
+
+    (function initDarkMode() {
+        var isEnabled = localStorage.getItem("dh-dark-mode") === "1";
+        document.body.classList.toggle("dark-mode", isEnabled);
+        var darkModeToggle = document.getElementById("darkModeToggle");
+        if (darkModeToggle) darkModeToggle.checked = isEnabled;
+    })();
+
+    function hideFooterPanel() {
+        document.getElementById("pageFooter").style.display = "none";
+        document.getElementById("footerShowBtn").style.display = "inline-block";
+    }
+
+    function showFooterPanel() {
+        document.getElementById("pageFooter").style.display = "block";
+        document.getElementById("footerShowBtn").style.display = "none";
+
+        // Ensure the restored footer is fully visible.
+        requestAnimationFrame(function() {
+            window.scrollTo({
+                top: document.documentElement.scrollHeight,
+                behavior: "smooth"
+            });
+        });
+    }
+</script>

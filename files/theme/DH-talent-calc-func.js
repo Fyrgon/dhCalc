@@ -853,8 +853,27 @@ function showHint() {
 
     var rectBtn = this.getBoundingClientRect();
     var rectHin = hint.getBoundingClientRect();
-    hint.style.left = (rectBtn.left - rectHin.width - 5) + "px";
-    hint.style.top = (rectBtn.top - 5) + "px";
+    var pad = 8;
+
+    // Prefer left side, but when wrapped layout leaves no room, place the hint on the right.
+    var left = rectBtn.left - rectHin.width - pad;
+    if (left < pad) {
+        left = rectBtn.right + pad;
+    }
+    if (left + rectHin.width > window.innerWidth - pad) {
+        left = Math.max(pad, window.innerWidth - rectHin.width - pad);
+    }
+
+    var top = rectBtn.top - 5;
+    if (top + rectHin.height > window.innerHeight - pad) {
+        top = window.innerHeight - rectHin.height - pad;
+    }
+    if (top < pad) {
+        top = pad;
+    }
+
+    hint.style.left = left + "px";
+    hint.style.top = top + "px";
 }
 
 function hideHint() {

@@ -2,8 +2,33 @@
     position: initial;
 }
 
+:root {
+    --page-bg: #f2f2f2;
+    --page-text: #1e1e1e;
+    --link-text: #1f4f8b;
+    --link-hover-text: #163b66;
+    --link-visited-text: #5d4c7f;
+    --link-on-dark-text: #d7e8ff;
+    --link-on-dark-hover-text: #eef5ff;
+    --field-text: #1e1e1e;
+    --table-text: #1e1e1e;
+    --panel-bg: rgba(100, 100, 100, 0.5);
+    --panel-text: #300;
+    --card-bg: #f5f5dc;
+    --card-border: gray;
+    --hint-bg: beige;
+    --hint-border: black;
+    --dt-bg: #333;
+    --dt-text: #fff;
+    --control-bg: #f7f7f7;
+    --control-border: #afafaf;
+}
+
 body {
     padding: 2em;
+    background-color: var(--page-bg);
+    color: var(--page-text);
+    transition: background-color 0.2s ease, color 0.2s ease;
 }
 
 div {
@@ -17,15 +42,10 @@ footer {
     bottom: 0;
     width: 100%;
     height: 140px;
-    background-color: rgba(100, 100, 100, 0.5);
-    color: #300;
+    background-color: var(--panel-bg);
+    color: var(--panel-text);
     text-align: center;
     z-index: 10;
-}
-div#footer {
-    height: 100px;
-    clear: both;
-    opacity: 0;
 }
 
 dl {
@@ -36,8 +56,8 @@ dl {
 
 dt {
     padding: 2px 4px;
-    background: #333;
-    color: #fff;
+    background: var(--dt-bg);
+    color: var(--dt-text);
 }
 
 dd {
@@ -111,8 +131,8 @@ button.hiddenTitle.selected {
     left: -25%;
     right: -25%;
     bottom: 1em;
-    border: 1px solid gray;
-    background: rgba(245,245,220,1);
+    border: 1px solid var(--card-border);
+    background: var(--card-bg);
     padding: 0.5em 2em;
     z-index: 50;
     /*width: max-content;*/
@@ -143,6 +163,8 @@ table.skillHint {
     text-align: center;
     width: 100%;
     border-collapse: collapse;
+    margin: 0;
+    background: var(--hint-bg);
 }
 
 table.skillHint tr {
@@ -153,6 +175,7 @@ table.skillHint tr {
 .skillHint td {
     border: 2px ridge darkred;
     padding: 0 10px;
+    background: var(--hint-bg);
 }
 .skillHint td {
     width: inherit;
@@ -160,16 +183,20 @@ table.skillHint tr {
 
 .hiddenHint {
     display: none;
-    position: absolute;
-    right: 0;
+    position: fixed;
+    left: 0;
     top: 0;
     max-width: 15vw;
     width: fit-content;
     height: fit-content;
-    border: 2px black solid;
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    overflow: hidden;
+    border: 2px var(--hint-border) solid;
     border-radius: 10px;
-    background: beige;
-    z-index: 10;
+    background: var(--hint-bg);
+    z-index: 100;
 }
 
 #skillTable button:not(.restricted) span:after {
@@ -219,6 +246,15 @@ table.skillHint tr {
 
 .value {
     width: 2em;
+}
+
+#INPlevel,
+#INPskillModif,
+#INPskillPoint {
+    width: auto;
+    min-width: 3ch;
+    field-sizing: content;
+    font-variant-numeric: tabular-nums;
 }
 
 .restricted {
@@ -305,10 +341,166 @@ button:not(.restricted) {
 }
 
 button.control {
-    background-image: linear-gradient(to bottom, #e4e4e4, #f7f7f7);
-    border: 1px solid #afafaf;
+    background-image: linear-gradient(to bottom, #e4e4e4, var(--control-bg));
+    border: 1px solid var(--control-border);
     width: auto;
 	height: 2em;
+}
+
+a {
+    color: var(--link-text);
+    text-decoration: underline;
+    text-decoration-color: color-mix(in srgb, var(--link-text) 75%, transparent);
+    text-decoration-thickness: 0.08em;
+    text-underline-offset: 0.08em;
+}
+
+a:hover,
+a:focus-visible {
+    color: var(--link-hover-text);
+}
+
+a:visited {
+    color: var(--link-visited-text);
+}
+
+input,
+select,
+textarea {
+    background-color: #ffffff;
+    border: 1px solid var(--control-border);
+    box-sizing: border-box;
+    color: var(--field-text);
+}
+
+input {
+    text-align: center;
+}
+
+input:disabled,
+select:disabled,
+textarea:disabled {
+    background-color: #e8e8e8;
+    color: #3c3c3c;
+}
+
+table,
+th,
+td {
+    color: var(--table-text);
+}
+
+#darkModeToggleLabel {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35em;
+    font-size: 0.6em;
+    margin-left: 0.6em;
+    user-select: none;
+}
+
+#darkModeToggle {
+    margin: 0;
+}
+
+/* Footer show/hide controls should stay compact and not use tile button sizing. */
+#footerHideBtn,
+#footerShowBtn {
+    width: auto;
+    height: auto;
+    min-width: 1.8em;
+    min-height: 1.8em;
+    margin: 0;
+    padding: 0.25em 0.55em;
+    border: 1px solid #333;
+    border-radius: 0.4em;
+    background: rgba(250, 250, 250, 0.95);
+    background-image: none;
+    background-size: initial;
+    font-size: 0.95em;
+    line-height: 1.2;
+    white-space: nowrap;
+}
+
+#footerHideBtn {
+    padding: 0.2em 0.5em;
+    font-weight: bold;
+}
+
+#footerShowBtn {
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.25);
+}
+
+body.dark-mode {
+    --page-bg: #1a1d22;
+    --page-text: #cfd6e0;
+    --link-text: #7ea6df;
+    --link-hover-text: #9cbce8;
+    --link-visited-text: #a996cd;
+    --link-on-dark-text: #c8defd;
+    --link-on-dark-hover-text: #e5f0ff;
+    --field-text: #cfd6e0;
+    --table-text: #cfd6e0;
+    --panel-bg: rgba(20, 24, 31, 0.92);
+    --panel-text: #c4cbd6;
+    --card-bg: #2a313b;
+    --card-border: #556273;
+    --hint-bg: #252b34;
+    --hint-border: #7b8da6;
+    --dt-bg: #3b4655;
+    --dt-text: #d3dae4;
+    --control-bg: #323b47;
+    --control-border: #66768f;
+}
+
+body.dark-mode input,
+body.dark-mode select,
+body.dark-mode textarea {
+    background-color: #232933;
+    border: 1px solid #5f6e82;
+}
+
+body.dark-mode input:disabled,
+body.dark-mode select:disabled,
+body.dark-mode textarea:disabled {
+    background-color: #101920;
+    color: #b7c0ce;
+}
+
+body.dark-mode button.control {
+    background-image: none;
+    background-color: var(--control-bg);
+    color: var(--page-text);
+}
+
+/* Dim bright icon backgrounds in dark mode without editing source image files. */
+body.dark-mode button:not(.control):not(#footerHideBtn):not(#footerShowBtn) {
+    background-color: rgba(10, 16, 24, 0.38);
+    background-blend-mode: multiply;
+}
+
+body.dark-mode #footerHideBtn,
+body.dark-mode #footerShowBtn {
+    background: #2b333f;
+    color: #cfd6e0;
+    border-color: #7788a0;
+}
+
+/* Some links are rendered on dark strips (e.g. footer dt rows); keep high contrast there. */
+footer a,
+footer a:visited,
+dt a,
+dt a:visited {
+    color: var(--link-on-dark-text);
+    text-decoration-color: color-mix(in srgb, var(--link-on-dark-text) 80%, transparent);
+}
+
+footer a:hover,
+footer a:focus-visible,
+dt a:hover,
+dt a:focus-visible {
+    color: var(--link-on-dark-hover-text);
+    text-decoration-color: color-mix(in srgb, var(--link-on-dark-hover-text) 85%, transparent);
 }
 
 .none {
